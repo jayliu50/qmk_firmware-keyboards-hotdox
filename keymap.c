@@ -6,7 +6,7 @@
 #include "personal.h"
 
 // Layer definitions
-enum {
+enum layers {
     BASE = 0,   // default layer
     PLVR,       // Plover
     PLVR_FN,    // Plover Functions
@@ -93,7 +93,8 @@ const uint16_t PROGMEM fn_actions[] = {
 
 // Macro Definitions
 enum  custom_keycodes {
-  PLVR_TOG = 0,     // Plover toggle
+  VRSN = SAFE_RANGE,
+  PLVR_TOG,     // Plover toggle
   PLVR_DICT,        // Plover add to dictionary
   PLVR_LOOK,        // Plover lookup dictionary
   PLVR_RESET,       // Plover reset output
@@ -121,38 +122,17 @@ enum  custom_keycodes {
 
 };
 
-/*=====  End of Macro Definitions  ======*/
-
-
-
-/*=====================================
-=            Dynamic Macro            =
-=====================================*/
-
-enum planck_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
-  DVORAK,
-  PLOVER,
-  LOWER,
-  RAISE,
-  BACKLIT,
-  EXT_PLV,
-  DYNAMIC_MACRO_RANGE,
-};
-
-void backlight_toggle(void) {
-    ergodox_board_led_on();
-}
-
-#include "dynamic_macro.h"
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_dynamic_macro(keycode, record)) {
-        return false;
-    }
 
   switch(keycode) {
+
+    case VRSN:
+      if (record->event.pressed) {
+        SEND_STRING (QMK_KEYBOARD "/" QMK_KEYMAP " @ " QMK_VERSION);
+      }
+      return false;
+      break;
+
 
     case PLVR_TOG: {
         if (record->event.pressed) {
@@ -297,7 +277,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-/*=====  End of Dynamic Macro  ======*/
+/*=====  End of Macro Definitions ======*/
 
 
 /*===============================================
@@ -382,11 +362,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /**/  KC_TAB,             /**/  KC_SCLN,            /**/  KC_COMM,            /**/  KC_DOT,             /**/  KC_P,               /**/  KC_Y,               /**/  MO(SYMB),           /**/
     /**/  KC_ENT,             /**/  KC_A,               /**/  KC_O,               /**/  KC_E,               /**/  KC_U,               /**/  KC_I,               /**/                      /**/
     /**/  KC_LSFT,            /**/  KC_QUOT,            /**/  KC_Q,               /**/  KC_J,               /**/  KC_K,               /**/  KC_X,               /**/  KC_DEL,             /**/
-    /**/  KC_LCTL,            /**/  MO(FKEY),           /**/  KC_TRNS,            /**/  MO(SKCH),           /**/  MO(NUMB),           /**/                      /**/                      /**/
+    /**/  KC_LGUI,            /**/  MO(FKEY),           /**/  KC_TRNS,            /**/  MO(SKCH),           /**/  MO(NUMB),           /**/                      /**/                      /**/
 
     /**/                      /**/                      /**/                      /**/                      /**/                      /**/  KC_LALT,            /**/  KC_HOME,            /**/
     /**/                      /**/                      /**/                      /**/                      /**/                      /**/                      /**/  KC_END,             /**/
-    /**/                      /**/                      /**/                      /**/                      /**/  KC_SPC,             /**/  KC_LGUI,            /**/  MO(_DYN),           /**/
+    /**/                      /**/                      /**/                      /**/                      /**/  KC_SPC,             /**/  KC_LCTL,            /**/  MO(_DYN),           /**/
 
 
     /**/  TD(JL_CP),          /**/  KC_GT,              /**/  KC_RPRN,            /**/  KC_RCBR,            /**/  KC_RBRC,            /**/  KC_EXLM,            /**/  TG(PLVR),           /**/
@@ -397,7 +377,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /**/  KC_MS_WH_DOWN,      /**/  KC_RALT,            /**/                      /**/                      /**/                      /**/                      /**/                      /**/
     /**/  KC_MS_WH_UP,        /**/                      /**/                      /**/                      /**/                      /**/                      /**/                      /**/
-    /**/  KC_ESC,             /**/  KC_RGUI,            /**/  KC_BSPC             /**/                      /**/                      /**/                      /**/                      /**/
+    /**/  KC_ESC,             /**/  KC_RCTL,            /**/  KC_BSPC             /**/                      /**/                      /**/                      /**/                      /**/
     ),
 
 
@@ -495,7 +475,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [FKEY] = LAYOUT_ergodox(
 //  /**/  ------------------   /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------    /**/
-    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_MUTE,              /**/
+    /**/  VRSN,                /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_MUTE,              /**/
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_VOLU,              /**/
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/                        /**/
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_VOLD,              /**/
