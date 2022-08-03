@@ -2,7 +2,7 @@
 #include "debug.h"
 #include "action_layer.h"
 #include "version.h"
-#include "keymap_dvp.h" // DP_ for dvorak key
+#include "../../../../quantum/keymap_extras/keymap_dvorak_programmer.h" // DP_ for dvorak key
 #include "personal.h"
 
 // Layer definitions
@@ -92,7 +92,7 @@ const uint16_t PROGMEM fn_actions[] = {
 =========================================*/
 
 // Macro Definitions
-enum {
+enum  custom_keycodes {
   PLVR_TOG = 0,     // Plover toggle
   PLVR_DICT,        // Plover add to dictionary
   PLVR_LOOK,        // Plover lookup dictionary
@@ -113,6 +113,7 @@ enum {
   PER_USER,
   PER_PH,
   PER_EMAIL,
+  PRO_EMAIL,
   ADDR_STREET,
   ADDR_CITY,
   ADDR_STATE,
@@ -120,62 +121,90 @@ enum {
 
 };
 
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-  switch(id) {
+/*=====  End of Macro Definitions  ======*/
+
+
+
+/*=====================================
+=            Dynamic Macro            =
+=====================================*/
+
+enum planck_keycodes {
+  QWERTY = SAFE_RANGE,
+  COLEMAK,
+  DVORAK,
+  PLOVER,
+  LOWER,
+  RAISE,
+  BACKLIT,
+  EXT_PLV,
+  DYNAMIC_MACRO_RANGE,
+};
+
+void backlight_toggle(void) {
+    ergodox_board_led_on();
+}
+
+#include "dynamic_macro.h"
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_dynamic_macro(keycode, record)) {
+        return false;
+    }
+
+  switch(keycode) {
 
     case PLVR_TOG: {
         if (record->event.pressed) {
             // this will be interpreted by my Plover dictionary to toggle steno mode
-            return MACRO( D(A), D(W), D(H), D(I), D(K), D(N), W(10), U(A), U(W), U(H), U(I), U(K), U(N), END);
+            // return MACRO( D(A), D(W), D(H), D(I), D(K), D(N), W(10), U(A), U(W), U(H), U(I), U(K), U(N), END);
         }
         break;
     }
     case PLVR_DICT: {
         if (record->event.pressed) {
             // This will be interpreted by my Plover dictionary to open up the dictionary
-            return MACRO( D(W), D(S), D(N), D(M), D(K), D(L), D(P), D(H), W(10), U(W), U(S), U(N), U(M), U(K), U(L), U(P), U(H), END);
+            // return MACRO( D(W), D(S), D(N), D(M), D(K), D(L), D(P), D(H), W(10), U(W), U(S), U(N), U(M), U(K), U(L), U(P), U(H), END);
         }
     }
     case PLVR_LOOK: {
         if (record->event.pressed) {
-            return MACRO( D(W), D(S), D(N), D(M), D(K), D(L), D(P), W(10), U(W), U(S), U(N), U(M), U(K), U(L), U(P), END);
+            // return MACRO( D(W), D(S), D(N), D(M), D(K), D(L), D(P), W(10), U(W), U(S), U(N), U(M), U(K), U(L), U(P), END);
         }
     }
     case PLVR_RESET: {
         if (record->event.pressed) {
-            return MACRO( D(F), D(N), D(H), D(U), D(P), W(10), U(F), U(N), U(H), U(U), U(P), END);
+            // return MACRO( D(F), D(N), D(H), D(U), D(P), W(10), U(F), U(N), U(H), U(U), U(P), END);
         }
     }
     case PLVR_UP_LAST: {
         if (record->event.pressed) {
-            return MACRO( D(H), D(M), D(I), D(LBRC), W(10), U(H), U(M), U(I), U(LBRC), END);
+            // return MACRO( D(H), D(M), D(I), D(LBRC), W(10), U(H), U(M), U(I), U(LBRC), END);
         }
     }
     case PLVR_LO_LAST: {
         if (record->event.pressed) {
-            return MACRO(D(R), D(F), D(V), D(N), D(H), D(J), D(LBRC), W(10), U(R), U(F), U(V), U(N), U(H), U(J), U(LBRC), END);
+            // return MACRO(D(R), D(F), D(V), D(N), D(H), D(J), D(LBRC), W(10), U(R), U(F), U(V), U(N), U(H), U(J), U(LBRC), END);
         }
     }
     case PLVR_TOG_AST: {
         if (record->event.pressed) {
-            return MACRO( D(1), D(H), W(10), U(1), U(H), END);
+            // return MACRO( D(1), D(H), W(10), U(1), U(H), END);
         }
     }
     case PLVR_ADD_SP: {
         if (record->event.pressed) {
-            return MACRO( D(C), D(U), D(I), D(SCLN), W(10), U(C), U(U), U(I), U(SCLN), END);
+            // return MACRO( D(C), D(U), D(I), D(SCLN), W(10), U(C), U(U), U(I), U(SCLN), END);
         }
     }
     case PLVR_REM_SP: {
         if (record->event.pressed) {
-            return MACRO( D(W), D(S), D(U), D(I), D(SCLN), W(10), U(W), U(S), U(U), U(I), U(SCLN), END);
+            // return MACRO( D(W), D(S), D(U), D(I), D(SCLN), W(10), U(W), U(S), U(U), U(I), U(SCLN), END);
         }
     }
     case DBL_P0: {
         if (record->event.pressed) {
-            // puts down two 0s
-            return MACRO( T(P0), T(P0), END );
+            SEND_STRING("00");
         }
     }
     case CLEAR_MODS: {
@@ -233,6 +262,12 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
             return false;
         }
     }
+    case PRO_EMAIL: {
+        if (record->event.pressed) {
+            SEND_STRING(_PRO_EMAIL);
+            return false;
+        }
+    }
     case ADDR_STREET: {
         if (record->event.pressed) {
             SEND_STRING(_ADDR_STREET);
@@ -257,45 +292,7 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
             return false;
         }
     }
-
-
-
-
-
   }
-  return MACRO_NONE;
-};
-
-/*=====  End of Macro Definitions  ======*/
-
-
-
-/*=====================================
-=            Dynamic Macro            =
-=====================================*/
-
-enum planck_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
-  DVORAK,
-  PLOVER,
-  LOWER,
-  RAISE,
-  BACKLIT,
-  EXT_PLV,
-  DYNAMIC_MACRO_RANGE,
-};
-
-void backlight_toggle(void) {
-    ergodox_board_led_on();
-}
-
-#include "dynamic_macro.h"
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!process_record_dynamic_macro(keycode, record)) {
-        return false;
-    }
     // <...THE REST OF THE FUNCTION...>
     return true;
 }
@@ -407,9 +404,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [PLVR] = LAYOUT_ergodox(
 //  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/
     /**/  KC_TRNS,            /**/  KC_1,               /**/  KC_2,               /**/  KC_3,               /**/  KC_4,               /**/  KC_5,               /**/  KC_NO,              /**/
-    /**/  KC_TRNS,            /**/  KC_Q,               /**/  KC_W,               /**/  KC_E,               /**/  KC_R,               /**/  KC_T,               /**/  M(PLVR_LOOK),       /**/
+    /**/  KC_TRNS,            /**/  KC_Q,               /**/  KC_W,               /**/  KC_E,               /**/  KC_R,               /**/  KC_T,               /**/  PLVR_LOOK,       /**/
     /**/  KC_TRNS,            /**/  KC_A,               /**/  KC_S,               /**/  KC_D,               /**/  KC_F,               /**/  KC_G,               /**/                      /**/
-    /**/  KC_TRNS,            /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  M(PLVR_DICT),       /**/
+    /**/  KC_TRNS,            /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  PLVR_DICT,       /**/
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  MO(BASE),           /**/  MO(PLVR_FN),        /**/  KC_TRNS,            /**/                      /**/                      /**/
 
     /**/                      /**/                      /**/                      /**/                      /**/                      /**/  KC_NO,              /**/  KC_NO,              /**/
@@ -418,12 +415,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 
     /**/  MAGIC_TOGGLE_NKRO,  /**/  KC_6,               /**/  KC_7,               /**/  KC_8,               /**/  KC_9,               /**/  KC_0,               /**/  (KC_TRNS),          /**/
-    /**/  M(PLVR_TOG),        /**/  KC_Y,               /**/  KC_U,               /**/  KC_I,               /**/  KC_O,               /**/  KC_P,               /**/  KC_LBRC,            /**/
+    /**/  PLVR_TOG,        /**/  KC_Y,               /**/  KC_U,               /**/  KC_I,               /**/  KC_O,               /**/  KC_P,               /**/  KC_LBRC,            /**/
     /**/                      /**/  KC_H,               /**/  KC_J,               /**/  KC_K,               /**/  KC_L,               /**/  KC_SCLN,            /**/  KC_QUOT,            /**/
     /**/  KC_TRNS,            /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  KC_NO,              /**/  TO(BASE),           /**/
     /**/                      /**/                      /**/  (KC_TRNS),          /**/  (KC_TRNS),          /**/  (KC_TRNS),          /**/  (KC_TRNS),          /**/  KC_TRNS,            /**/
 
-    /**/  M(PLVR_TOG),        /**/  KC_TRNS,            /**/                      /**/                      /**/                      /**/                      /**/                      /**/
+    /**/  PLVR_TOG,        /**/  KC_TRNS,            /**/                      /**/                      /**/                      /**/                      /**/                      /**/
     /**/  KC_NO,              /**/                      /**/                      /**/                      /**/                      /**/                      /**/                      /**/
     /**/  KC_TRNS,            /**/  KC_N,               /**/  KC_M                /**/                      /**/                      /**/                      /**/                      /**/
 ),
@@ -443,13 +440,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/                      /**/  M(PLVR_TOG_AST),    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/                      /**/  PLVR_TOG_AST,    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/                      /**/                      /**/  M(PLVR_REM_SP),     /**/  M(PLVR_LO_LAST),    /**/  M(PLVR_UP_LAST),    /**/  M(PLVR_ADD_SP),     /**/  KC_TRNS,            /**/
+    /**/                      /**/                      /**/  PLVR_REM_SP,     /**/  PLVR_LO_LAST,    /**/  PLVR_UP_LAST,    /**/  PLVR_ADD_SP,     /**/  KC_TRNS,            /**/
 
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/                      /**/                      /**/                      /**/                      /**/                      /**/
     /**/  KC_TRNS,            /**/                      /**/                      /**/                      /**/                      /**/                      /**/                      /**/
-    /**/  M(PLVR_RESET),      /**/  KC_TRNS,            /**/  KC_BSPC             /**/                      /**/                      /**/                      /**/                      /**/
+    /**/  PLVR_RESET,      /**/  KC_TRNS,            /**/  KC_BSPC             /**/                      /**/                      /**/                      /**/                      /**/
 ),
 
 
@@ -517,7 +514,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /**/  KC_TRNS,             /**/  KC_MS_BTN3,         /**/                      /**/                      /**/                      /**/                      /**/                        /**/
     /**/  KC_TRNS,             /**/                      /**/                      /**/                      /**/                      /**/                      /**/                        /**/
-    /**/  M(CLEAR_MODS),       /**/  KC_MS_BTN2,         /**/  KC_MS_BTN1          /**/                      /**/                      /**/                      /**/                        /**/
+    /**/  CLEAR_MODS,       /**/  KC_MS_BTN2,         /**/  KC_MS_BTN1          /**/                      /**/                      /**/                      /**/                        /**/
     ),
 
 
@@ -538,7 +535,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_P7,              /**/  KC_P8,              /**/  KC_P9,              /**/  KC_PMNS,            /**/  KC_TRNS,              /**/
     /**/                       /**/  KC_TRNS,            /**/  KC_P4,              /**/  KC_P5,              /**/  KC_P6,              /**/  KC_PPLS,            /**/  KC_PENT,              /**/
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_P1,              /**/  KC_P2,              /**/  KC_P3,              /**/  KC_TRNS,            /**/  TG(NUMB),             /**/
-    /**/                       /**/                      /**/  KC_P0,              /**/  M(DBL_P0),          /**/  KC_PDOT,            /**/  KC_TRNS,            /**/  KC_TRNS,              /**/
+    /**/                       /**/                      /**/  KC_P0,              /**/  DBL_P0,          /**/  KC_PDOT,            /**/  KC_TRNS,            /**/  KC_TRNS,              /**/
 
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/                      /**/                      /**/                      /**/                      /**/                        /**/
     /**/  KC_TRNS,             /**/                      /**/                      /**/                      /**/                      /**/                      /**/                        /**/
@@ -574,10 +571,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_DYN] = LAYOUT_ergodox(
 //  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  M(PER_ID),          /**/  M(WORK_ID),         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  M(PER_EMAIL),       /**/  M(WORK_EMAIL),      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  M(PER_USER),        /**/  M(WORK_USER),       /**/  KC_TRNS,            /**/                      /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  M(PER_PH),          /**/  M(WORK_PH),         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PRO_EMAIL,       /**/  WORK_ID,         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PER_EMAIL,       /**/  WORK_EMAIL,      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PER_USER,        /**/  WORK_USER,       /**/  KC_TRNS,            /**/                      /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PER_PH,          /**/  WORK_PH,         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/                      /**/                      /**/
 
     /**/                      /**/                      /**/                      /**/                      /**/                      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
@@ -587,7 +584,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
     /**/  DYN_REC_START2,     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/                      /**/  KC_TRNS,            /**/  M(ADDR_STREET),     /**/  M(ADDR_CITY),       /**/  M(ADDR_STATE),      /**/  M(ADDR_ZIP),        /**/  KC_TRNS,            /**/
+    /**/                      /**/  KC_TRNS,            /**/  ADDR_STREET,     /**/  ADDR_CITY,       /**/  ADDR_STATE,      /**/  ADDR_ZIP,        /**/  KC_TRNS,            /**/
     /**/  DYN_REC_START1,     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
     /**/                      /**/                      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
 
