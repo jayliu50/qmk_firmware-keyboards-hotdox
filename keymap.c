@@ -114,7 +114,9 @@ enum  custom_keycodes {
   PER_USER,
   PER_PH,
   PER_EMAIL,
+  PRO_SITE,
   PRO_EMAIL,
+  PRO_RES,
   ADDR_STREET,
   ADDR_CITY,
   ADDR_STATE,
@@ -245,6 +247,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case PRO_EMAIL: {
         if (record->event.pressed) {
             SEND_STRING(_PRO_EMAIL);
+            return false;
+        }
+    }
+    case PRO_SITE: {
+        if (record->event.pressed) {
+            SEND_STRING(_PRO_SITE);
+            return false;
+        }
+    }
+    case PRO_RES: {
+        if (record->event.pressed) {
+            SEND_STRING(_PRO_RES);
             return false;
         }
     }
@@ -511,11 +525,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /**/                       /**/                      /**/                      /**/                      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,              /**/
 
 
-    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_PSLS,            /**/  KC_PAST,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,              /**/
-    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_P7,              /**/  KC_P8,              /**/  KC_P9,              /**/  KC_PMNS,            /**/  KC_TRNS,              /**/
+    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_NUM,             /**/  KC_PSLS,            /**/  KC_PAST,            /**/  KC_PMNS,            /**/  KC_TRNS,              /**/
+    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_P7,              /**/  KC_P8,              /**/  KC_P9,              /**/  KC_PPLS,            /**/  KC_TRNS,              /**/
     /**/                       /**/  KC_TRNS,            /**/  KC_P4,              /**/  KC_P5,              /**/  KC_P6,              /**/  KC_PPLS,            /**/  KC_PENT,              /**/
-    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_P1,              /**/  KC_P2,              /**/  KC_P3,              /**/  KC_TRNS,            /**/  TG(NUMB),             /**/
-    /**/                       /**/                      /**/  KC_P0,              /**/  DBL_P0,          /**/  KC_PDOT,            /**/  KC_TRNS,            /**/  KC_TRNS,              /**/
+    /**/  KC_TRNS,             /**/  KC_TRNS,            /**/  KC_P1,              /**/  KC_P2,              /**/  KC_P3,              /**/  KC_PENT,            /**/  TG(NUMB),             /**/
+    /**/                       /**/                      /**/  KC_P0,              /**/  KC_P0,              /**/  KC_PDOT,            /**/  KC_PENT,            /**/  KC_TRNS,              /**/
 
     /**/  KC_TRNS,             /**/  KC_TRNS,            /**/                      /**/                      /**/                      /**/                      /**/                        /**/
     /**/  KC_TRNS,             /**/                      /**/                      /**/                      /**/                      /**/                      /**/                        /**/
@@ -551,10 +565,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_DYN] = LAYOUT_ergodox(
 //  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/  ------------------  /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PRO_EMAIL,       /**/  WORK_ID,         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PER_EMAIL,       /**/  WORK_EMAIL,      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PER_USER,        /**/  WORK_USER,       /**/  KC_TRNS,            /**/                      /**/
-    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PER_PH,          /**/  WORK_PH,         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  WORK_ID,         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PRO_SITE,          /**/  PER_USER,          /**/  WORK_USER,      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PRO_EMAIL,           /**/  PER_EMAIL,           /**/  WORK_EMAIL,       /**/  KC_TRNS,            /**/                      /**/
+    /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  PRO_RES,            /**/  PER_PH,             /**/  WORK_PH,         /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
     /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/  KC_TRNS,            /**/                      /**/                      /**/
 
     /**/                      /**/                      /**/                      /**/                      /**/                      /**/  KC_TRNS,            /**/  KC_TRNS,            /**/
